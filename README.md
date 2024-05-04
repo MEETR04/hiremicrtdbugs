@@ -12,6 +12,6 @@ Till now, i have worked upon these bugs.
 
 -------------------------
 Bug 1: alignment of contents on secondcongratulations.dart.
-Solution: 
+Solution: https://github.com/MEETR04/hiremicrtdbugs/blob/main/Mentorship.dart
 Bug 2: alignment of input fields in Register.dart.
 Bug 3: alignment and redesign of Profile Section in Settings.dart.
