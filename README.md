@@ -9,3 +9,9 @@ Bug: In Mentorship.dart, improper alignment of texts and textsizes.
 Solution: changed the fontsize and alignment of the text
 
 Till now, i have worked upon these bugs.
+
+-------------------------
+Bug 1: alignment of contents on secondcongratulations.dart.
+Solution: 
+Bug 2: alignment of input fields in Register.dart.
+Bug 3: alignment and redesign of Profile Section in Settings.dart.
