@@ -11,7 +11,14 @@ Solution: changed the fontsize and alignment of the text
 Till now, i have worked upon these bugs.
 
 -------------------------
+
+NEW TASKS:
+
 Bug 1: alignment of contents on secondcongratulations.dart.
-Solution: https://github.com/MEETR04/hiremicrtdbugs/blob/main/Mentorship.dart
+Solution: Removed padding between images and text.
+
 Bug 2: alignment of input fields in Register.dart.
+Solution: Wrapped fields with padding.
+
 Bug 3: alignment and redesign of Profile Section in Settings.dart.
+Solution: Redesigned according to Figma Prototype.
