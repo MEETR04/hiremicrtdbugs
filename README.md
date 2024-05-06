@@ -22,3 +22,7 @@ Solution: Wrapped fields with padding.
 
 Bug 3: alignment and redesign of Profile Section in Settings.dart.
 Solution: Redesigned according to Figma Prototype.
+
+-----------------------
+Bug: Padding in internship.dart
+Solution: changed elevated button to container widget and wrapped it with inkwell
