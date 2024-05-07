@@ -26,3 +26,7 @@ Solution: Redesigned according to Figma Prototype.
 -----------------------
 Bug: Padding in internship.dart
 Solution: changed elevated button to container widget and wrapped it with inkwell
+---------------------------
+Internship.dart
+replaced No vacancies text to circular progress bar.
+
