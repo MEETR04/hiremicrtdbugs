@@ -497,12 +497,15 @@ class _InternScreenState extends State<InternScreen> {
                             : const Padding(
                                 padding: EdgeInsets.only(bottom: 75.0),
                                 child: Center(
-                                  child: Text(
-                                    'No vacancies are available',
-                                    style: TextStyle(
-                                      fontFamily: 'FontMain',
-                                      fontSize: 18,
-                                    ),
+                                  // child: Text(
+                                  //   'No vacancies are available',
+                                  //   style: TextStyle(
+                                  //     fontFamily: 'FontMain',
+                                  //     fontSize: 18,
+                                  //   ),
+                                  // ),
+                                  child: CircularProgressIndicator(
+                                    color: Colors.redAccent,
                                   ),
                                 ),
                               ),
