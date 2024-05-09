@@ -30,3 +30,7 @@ Solution: changed elevated button to container widget and wrapped it with inkwel
 Internship.dart
 replaced No vacancies text to circular progress bar.
 
+---------------------------------------------------------------
+
+Data caching in Internship.dart https://github.com/MEETR04/hiremicrtdbugs/blob/main/internship.dart
+
