@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hiremi/CongratulationScreen.dart';
 import 'package:hiremi/HomePage.dart';
 import 'package:hiremi/InternDescription.dart';
-import 'package:hiremi/JobDescription.dart';
 import 'package:hiremi/api_services/base_services.dart';
-import 'package:hiremi/api_services/user_services.dart';
-//import 'package:hiremi/jon_description_screen.dart';
-import 'package:hiremi/models/fresher_job_model.dart';
 import 'package:hiremi/models/intern_job_model.dart';
-import 'package:hiremi/signin.dart';
-import 'package:hiremi/utils/my_colors.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -24,92 +17,17 @@ class InternScreen extends StatefulWidget {
 }
 
 class _InternScreenState extends State<InternScreen> {
-  List<InternshipJobModel> InternshipList = [];
-  Map<int, bool> jobStatusMap = {};
+  List<InternshipJobModel> internshipList = [];
+  String loginEmail = "";
+
   @override
   void initState() {
     super.initState();
-    // OnlyApplyOneJob();
-    fetchDataFromApi();
-    _loadUserEmail();
-    //_checkAppliedJobs(); //
-    //checkIfApplied();
-    //_loadStatus2();
-    //fetchAppliedJobs();
-  }
-
-  List<int> appliedJobIds = [];
-  List<int> otherJobIds = [];
-  String loginEmail = "";
-  bool AlreadyApplied = false;
-  bool alreadyApplied = false;
-
-  Future<void> _loadUserEmail() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? savedUsername = prefs.getString('username');
-
-    if (savedUsername != null && savedUsername.isNotEmpty) {
-      setState(() {
-        loginEmail = savedUsername;
-      });
-      print("login mail is  $loginEmail");
-    }
-  }
-
-  Future<void> fetchDataFromApi() async {
-    final response =
-        await http.get(Uri.parse('${ApiUrls.baseurl}/api/internship/'));
-
-    if (response.statusCode == 200) {
-      final List<dynamic> responseData = json.decode(response.body);
-      setState(() {
-        InternshipList = responseData
-            .map((data) => InternshipJobModel.fromJson(data))
-            .toList();
-      });
-      print("internship List Length: ${InternshipList.length}");
-    } else {
-      throw Exception('Failed to load data from the API');
-    }
-  }
-
-  Future<void> OnlyApplyOneJob() async {
-    print("OnlyApplyOneJob");
-    try {
-      final response = await http
-          .get(Uri.parse('${ApiUrls.baseurl}Internship-applications/'));
-
-      if (response.statusCode == 200) {
-        final List<dynamic> dataList = json.decode(response.body);
-
-        // Counter for verified records
-
-        for (int index = 0; index < dataList.length; index++) {
-          final Map<String, dynamic> data = dataList[index];
-
-          final String userEmail = data['email'];
-
-          if (userEmail == loginEmail) {
-            await OnlyApplyOneJobDialogBox();
-            print("I am in if section");
-            break;
-            // Increment the counter for the next verified record
-          } else {
-            print("Hello i am in else section");
-            print(loginEmail);
-          }
-        }
-      } else {
-        print('Status code: ${response.statusCode}');
-        throw Exception('Failed to load data');
-      }
-    } catch (e) {
-      print("Error in OnlyApplyOneJob :$e");
-    }
+    fetchDataFromCacheOrApi();
   }
 
   Future<bool> checkIfApplied(
-      String userEmail, String InternshipProfile, String companyName) async {
+      String userEmail, String internshipProfile, String companyName) async {
     try {
       final response = await http
           .get(Uri.parse('${ApiUrls.baseurl}Internship-applications/'));
@@ -124,12 +42,12 @@ class _InternScreenState extends State<InternScreen> {
           final String appliedCompanyName = data['company_name'];
 
           if (appliedUserEmail == userEmail &&
-              appliedInternshipProfile == InternshipProfile &&
+              appliedInternshipProfile == internshipProfile &&
               appliedCompanyName == companyName) {
-            return true;
+            return true; // User has already applied for this internship
           }
         }
-        return false; // User hasn't applied for this job
+        return false; // User hasn't applied for this internship
       } else {
         print('Status code: ${response.statusCode}');
         throw Exception('Failed to load data');
@@ -140,85 +58,63 @@ class _InternScreenState extends State<InternScreen> {
     }
   }
 
-  Future<bool> OnlyApplyOneJobDialogBox() async {
-    bool? result = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async {
-            return false;
-          },
-          child: AlertDialog(
-            backgroundColor: Colors.white,
-            surfaceTintColor: Colors.transparent,
-            actions: [
-              Column(
-                children: [
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  const Center(
-                    child: Text(
-                      "Your can only apply one internship",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: "FontMain",
-                        fontSize: 18,
-                        color: Color(0xFFBD232B),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 35,
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      // Handle onTap
-                      // var sharedPref=await SharedPreferences.getInstance();
-                      // sharedPref.setBool(CongratulationScreenState.KEYLOGIN, false);
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomePage(
-                                sourceScreen: '',
-                                uid: '',
-                                username: '',
-                                verificationId: '')),
-                        (Route<dynamic> route) =>
-                            false, // This line removes all routes from the stack
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFF13640),
-                      minimumSize: const Size(250, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    child: const Text(
-                      "HomePage",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-    return result ??
-        false; // Return false if the dialog is dismissed without pressing 'OK'
+  // Future<void> _loadUserEmail() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? savedUsername = prefs.getString('username');
+  //   //String? cacheddata = prefs.getString(cachekey);
+  //
+  //   if (savedUsername != null && savedUsername.isNotEmpty) {
+  //     setState(() {
+  //       loginEmail = savedUsername;
+  //     });
+  //     print("login mail is  $loginEmail");
+  //   }
+  // }
+
+  Future<void> fetchDataFromCacheOrApi() async {
+    // Check if data exists in cache
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? cachedData = prefs.getString('internship_data');
+
+    if (cachedData != null && cachedData.isNotEmpty) {
+      // If data exists in cache, parse and use it
+      final List<dynamic> cachedList = json.decode(cachedData);
+      setState(() {
+        internshipList = cachedList
+            .map((data) => InternshipJobModel.fromJson(data))
+            .toList();
+      });
+    } else {
+      // If data doesn't exist in cache, fetch from API
+      fetchDataFromApi();
+    }
   }
+
+  Future<void> fetchDataFromApi() async {
+    final response =
+        await http.get(Uri.parse('${ApiUrls.baseurl}/api/internship/'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = json.decode(response.body);
+      setState(() {
+        internshipList = responseData
+            .map((data) => InternshipJobModel.fromJson(data))
+            .toList();
+      });
+
+      // Cache the fetched data
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('internship_data', json.encode(responseData));
+    } else {
+      throw Exception('Failed to load data from the API');
+    }
+  }
+
+  // Other methods...
 
   @override
   Widget build(BuildContext context) {
-    print('Applied Job IDs: $appliedJobIds');
+    //print('Applied Job IDs: $AppliedJobIds');
     return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
@@ -280,22 +176,18 @@ class _InternScreenState extends State<InternScreen> {
                       Container(
                         width: 380,
                         height: 620,
-                        //color: Colors.red,
-                        child: InternshipList != null &&
-                                InternshipList.isNotEmpty
+                        child: internshipList != null &&
+                                internshipList.isNotEmpty
                             ? ListView.builder(
-                                itemCount: InternshipList.length,
+                                itemCount: internshipList.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  final internship = InternshipList[index];
+                                  final internship = internshipList[index];
                                   return Column(
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.all(10.0),
                                         child: Card(
                                           color: const Color(0xFFF8F8F8),
-                                          //color: Colors.white54,
-                                          shadowColor: Colors.grey,
-                                          surfaceTintColor: Colors.white54,
                                           elevation: 10,
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
@@ -329,128 +221,86 @@ class _InternScreenState extends State<InternScreen> {
                                               ),
                                               Padding(
                                                 padding: const EdgeInsets.only(
-                                                    left: 200.0,
-                                                    right: 10,
-                                                    bottom: 10),
+                                                  left: 200.0,
+                                                  right: 10,
+                                                  bottom: 10,
+                                                ),
                                                 child: InkWell(
                                                   onTap: () async {
-                                                    {
-                                                      print("Hello");
-                                                      bool applied =
-                                                          await checkIfApplied(
-                                                              loginEmail,
-                                                              internship
-                                                                  .InternshipProfile!,
-                                                              internship
-                                                                  .companyName!);
+                                                    print("Hello");
+                                                    bool applied =
+                                                        await checkIfApplied(
+                                                            loginEmail,
+                                                            internship
+                                                                .InternshipProfile!,
+                                                            internship
+                                                                .companyName!);
 
-                                                      if (applied) {
-                                                        print("Applied");
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
-                                                          const SnackBar(
-                                                            content: Text(
-                                                                'You have already applied for this internship.'),
+                                                    if (applied) {
+                                                      print("Applied");
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        SnackBar(
+                                                          content: Text(
+                                                              'You have already applied for this internship.'),
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      print("Not Applied");
+                                                      final int jobIndex =
+                                                          internshipList
+                                                              .indexOf(
+                                                                  internship);
+                                                      print(
+                                                          "Selected Job Index: $jobIndex");
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              InternshipDescription(
+                                                            jobIndex: jobIndex,
+                                                            id: internship.id!,
+                                                            InternshipProfile:
+                                                                internship
+                                                                    .InternshipProfile!,
+                                                            InternshipLocation:
+                                                                internship
+                                                                    .InternshipLocation!,
+                                                            InternshipCtc:
+                                                                internship
+                                                                    .InternshipCtc!,
+                                                            companyName:
+                                                                internship
+                                                                    .companyName!,
+                                                            education:
+                                                                internship
+                                                                    .education!,
+                                                            InternshipDescreption:
+                                                                internship
+                                                                    .InternshipDescription!,
+                                                            termsAndConditions:
+                                                                internship
+                                                                    .termsAndConditions!,
+                                                            skillRequired:
+                                                                internship
+                                                                    .skillsRequired!,
                                                           ),
-                                                        );
-                                                      } else {
-                                                        print("Not Applied");
-                                                        final int jobIndex =
-                                                            InternshipList
-                                                                .indexOf(
-                                                                    internship);
-                                                        print(
-                                                            "Selected Job Index: $jobIndex");
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                InternshipDescription(
-                                                              jobIndex:
-                                                                  jobIndex,
-                                                              id: internship
-                                                                  .id!,
-                                                              InternshipProfile:
-                                                                  internship
-                                                                      .InternshipProfile!,
-                                                              InternshipLocation:
-                                                                  internship
-                                                                      .InternshipLocation!,
-                                                              InternshipCtc:
-                                                                  internship
-                                                                      .InternshipCtc!,
-                                                              companyName:
-                                                                  internship
-                                                                      .companyName!,
-                                                              education:
-                                                                  internship
-                                                                      .education!,
-                                                              InternshipDescreption:
-                                                                  internship
-                                                                      .InternshipDescription!,
-                                                              termsAndConditions:
-                                                                  internship
-                                                                      .termsAndConditions!,
-                                                              skillRequired:
-                                                                  internship
-                                                                      .skillsRequired!,
-                                                            ),
-                                                          ),
-                                                        );
-                                                      }
+                                                        ),
+                                                      );
                                                     }
-                                                    ;
                                                   },
                                                   child: Container(
                                                     width: 150,
                                                     height: 40,
                                                     decoration: BoxDecoration(
-                                                        color:
-                                                            const Color(0xFFBD232B),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20)),
-                                                    child:
-                                                        // style: ButtonStyle(
-                                                        //   backgroundColor: MaterialStateProperty.all<Color>(Color(0xFFBD232B)),
-                                                        //   foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                                                        // ),
-                                                        // onPressed: () async {
-                                                        //   print("Hello");
-                                                        //   bool applied = await checkIfApplied(loginEmail, internship.InternshipProfile!, internship.companyName!);
-                                                        //
-                                                        //   if (applied) {
-                                                        //     print("Applied");
-                                                        //     ScaffoldMessenger.of(context).showSnackBar(
-                                                        //       SnackBar(
-                                                        //         content: Text('You have already applied for this internship.'),
-                                                        //       ),
-                                                        //     );
-                                                        //   } else {
-                                                        //     print("Not Applied");
-                                                        //     final int jobIndex = InternshipList.indexOf(internship);
-                                                        //     print("Selected Job Index: $jobIndex");
-                                                        //     Navigator.push(
-                                                        //       context,
-                                                        //       MaterialPageRoute(
-                                                        //         builder: (context) => InternshipDescription(
-                                                        //           jobIndex: jobIndex,
-                                                        //           id: internship.id!,
-                                                        //           InternshipProfile: internship.InternshipProfile!,
-                                                        //           InternshipLocation: internship.InternshipLocation!,
-                                                        //           InternshipCtc: internship.InternshipCtc!,
-                                                        //           companyName: internship.companyName!,
-                                                        //           education: internship.education!,
-                                                        //           InternshipDescreption: internship.InternshipDescription!,
-                                                        //           termsAndConditions: internship.termsAndConditions!,
-                                                        //           skillRequired: internship.skillsRequired!,
-                                                        //         ),
-                                                        //       ),
-                                                        //     );
-                                                        //   }
-                                                        // },
-                                                        const Row(
+                                                      color: const Color(
+                                                          0xFFBD232B),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20),
+                                                    ),
+                                                    child: const Row(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
                                                               .center,
@@ -461,12 +311,11 @@ class _InternScreenState extends State<InternScreen> {
                                                         Text(
                                                           'View details',
                                                           style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700,
-                                                              fontSize: 15,
-                                                              color:
-                                                                  Colors.white),
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            fontSize: 15,
+                                                            color: Colors.white,
+                                                          ),
                                                         ),
                                                         SizedBox(
                                                           width: 2,
@@ -482,7 +331,6 @@ class _InternScreenState extends State<InternScreen> {
                                                   ),
                                                 ),
                                               ),
-
                                             ],
                                           ),
                                         ),
@@ -497,13 +345,6 @@ class _InternScreenState extends State<InternScreen> {
                             : const Padding(
                                 padding: EdgeInsets.only(bottom: 75.0),
                                 child: Center(
-                                  // child: Text(
-                                  //   'No vacancies are available',
-                                  //   style: TextStyle(
-                                  //     fontFamily: 'FontMain',
-                                  //     fontSize: 18,
-                                  //   ),
-                                  // ),
                                   child: CircularProgressIndicator(
                                     color: Colors.redAccent,
                                   ),
