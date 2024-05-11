@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:hiremi/CongratulationScreen.dart';
 import 'package:hiremi/CreateUrPass.dart';
@@ -20,6 +22,7 @@ class Register extends StatefulWidget {
 
   @override
   State<Register> createState() => _RegisterState();
+
 }
 enum Gender{
   Male,Female,Other;
@@ -30,11 +33,10 @@ class _RegisterState extends State<Register> {
   String? statePicker;
   String? cityPicker;
   String genderSelector = "";
-  var uuid = Uuid();
+  var uuid = const Uuid();
   String errorTextVal = '';
   bool isPasswordVisible = false;
   bool isConfirmPasswordVisible = false;
-
   late String valueChoose;
   final firstnameController = TextEditingController();
   final lastnameController = TextEditingController();
@@ -55,29 +57,14 @@ class _RegisterState extends State<Register> {
   final passwordController = TextEditingController();
   final conformPasswordController = TextEditingController();
   final otp = TextEditingController();
+  bool SameasPhoneNumber = false;
 
   Future<void> storeCSRFToken(String csrfToken) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('csrfToken', csrfToken);
   }
- // TextEditingController passingYearController = TextEditingController();
-  DateTime? selectedDate;
 
-  // Future<void> _selectDate(BuildContext context) async {
-  //   final DateTime? picked = await showDatePicker(
-  //     context: context,
-  //     initialDate: selectedDate ?? DateTime.now(),
-  //     firstDate: DateTime(2015),
-  //     lastDate: DateTime(2035),
-  //   );
-  //
-  //   if (picked != null && picked != selectedDate) {
-  //     setState(() {
-  //       selectedDate = picked;
-  //       passingYearController.text = picked.year.toString();
-  //     });
-  //   }
-  // }
+  DateTime? selectedDate;
 
 
   List listItem=[
@@ -193,7 +180,27 @@ class _RegisterState extends State<Register> {
     'MCA',
     'Other',
   ];
+  late bool _isConnected;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkInternetConnection();
+  }
 
+
+  Future<void> checkInternetConnection() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _isConnected = false;
+      });
+    } else {
+      setState(() {
+        _isConnected = true;
+      });
+    }
+  }
 
 
   Future<void> submitVerification() async{
@@ -226,7 +233,7 @@ class _RegisterState extends State<Register> {
       if (response.statusCode == 201) {
         Navigator.push(context,MaterialPageRoute(builder: (context)
         {
-          return SignIn(isRegistrationSuccessful: true);
+          return const SignIn(isRegistrationSuccessful: true);
         }
         ),);
         print('Data posted successfully');
@@ -353,8 +360,8 @@ class _RegisterState extends State<Register> {
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              SizedBox(height: 30),
-                              Center(
+                              const SizedBox(height: 30),
+                              const Center(
                                 child: Text(
                                   "Email Already Exist",
                                   textAlign: TextAlign.center,
@@ -365,7 +372,7 @@ class _RegisterState extends State<Register> {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 35),
+                              const SizedBox(height: 35),
                               ElevatedButton(
                                 onPressed: () {
                                   // Pop the current route (the AlertDialog)
@@ -376,7 +383,7 @@ class _RegisterState extends State<Register> {
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFFF13640),
-                                  minimumSize: Size(250, 50),
+                                  minimumSize: const Size(250, 50),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30),
                                   ),
@@ -454,9 +461,8 @@ class _RegisterState extends State<Register> {
   @override
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+
   Widget build(BuildContext context) {
-
-
     double screenWidth=MediaQuery.of(context).size.width;
     void selectDatePicker() async {
       DateTime? currentDate = DateTime.now();
@@ -484,7 +490,7 @@ class _RegisterState extends State<Register> {
         context: context,
         builder: (BuildContext context) {
           return SimpleDialog(
-            title: Text('Select a Year'),
+            title: const Text('Select a Year'),
             children: years
                 .map(
                   (year) => SimpleDialogOption(
@@ -513,53 +519,53 @@ class _RegisterState extends State<Register> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(height: 30,),
+              const SizedBox(height: 30,),
               Row(
                 children: [
-          
+
                   InkWell(
                       onTap: (){
                         Navigator.push(context,MaterialPageRoute(builder: (context)
                         {
-                          return SignIn();
+                          return const SignIn();
                         }
                         ),);
                       },
                       child: Image.asset('images/Back_Button.png')),
                 ],
               ),
-              SizedBox(height: 10,),
+              const SizedBox(height: 10,),
               Container(
                 child: Row(
                   children: [
-          
-                    SizedBox(width: 10,),
+
+                    const SizedBox(width: 10,),
                    CustomTextWidget(text: "Register",
-                   color:  Color(0xFFBD232B),
+                   color:  const Color(0xFFBD232B),
                    fontSize: 30,
                    ),
-          
+
                   ],
                 ),
               ),
               Container(
                 child: Row(
                   children: [
-                    SizedBox(width: 30,),
+                    const SizedBox(width: 30,),
                     CustomTextWidget(text: "Create your new account,\nwe are glad that you joined us.",
                       fontSize: screenWidth < 411 ? 11 : 13,
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 45,),
-          
+              const SizedBox(height: 45,),
+
               Container(
-          
+
                 color: Colors.white,
                 child:  Row(
                   children: [
-                    SizedBox(width: 30,),
+                    const SizedBox(width: 30,),
                     Text("Your Name",style: TextStyle(
                       color:  Colors.black,
                       fontWeight: FontWeight.w700,
@@ -570,12 +576,12 @@ class _RegisterState extends State<Register> {
               ),
               Container(
                 color: Colors.white,
-          
+
                 child:  Row(
                   children: [
                     Flexible(
                       child: Padding(
-                        padding: EdgeInsets.all(30.0),
+                        padding: const EdgeInsets.all(30.0),
 
                         child: TextFormField(
                           controller:firstnameController ,
@@ -585,17 +591,17 @@ class _RegisterState extends State<Register> {
                             }
                             return null; // Return null if the input is valid
                           },
-                          decoration: InputDecoration(labelText: 'First Name',
+                          decoration: const InputDecoration(labelText: 'First Name',
                               labelStyle: TextStyle( color:Color(0xFFCACACA))),
                         ),
                       ),
-          
-          
+
+
                     ),
-          
+
                     Flexible(
                       child: Padding(
-                        padding: EdgeInsets.all(30.0),
+                        padding: const EdgeInsets.all(30.0),
                         child: TextFormField(
                           controller:lastnameController ,
                           validator: (value) {
@@ -604,7 +610,7 @@ class _RegisterState extends State<Register> {
                             }
                             return null; // Return null if the input is valid
                           },
-                          decoration: InputDecoration(labelText: 'Last Name',
+                          decoration: const InputDecoration(labelText: 'Last Name',
                           labelStyle: TextStyle( color:Color(0xFFCACACA))),
                         ),
                       ),
@@ -612,13 +618,13 @@ class _RegisterState extends State<Register> {
                   ],
                 ),
               ),
-              SizedBox(height: 30,),
+              const SizedBox(height: 30,),
               Container(
-          
+
                 color: Colors.white,
                 child:  Row(
                   children: [
-                    SizedBox(width: 30,),
+                    const SizedBox(width: 30,),
                     Text("Father's Name",style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w700,
@@ -629,12 +635,12 @@ class _RegisterState extends State<Register> {
               ),
               Container(
                 color: Colors.white,
-          
+
                 child: Row(
                   children: [
                     Flexible(
                       child: Padding(
-                        padding: EdgeInsets.all(30.0),
+                        padding: const EdgeInsets.all(30.0),
                         child: TextFormField(
                           controller:fatherFirstController ,
                           validator: (value) {
@@ -643,15 +649,15 @@ class _RegisterState extends State<Register> {
                             }
                             return null; // Return null if the input is valid
                           },
-                          decoration: InputDecoration(labelText: 'First Name',
+                          decoration: const InputDecoration(labelText: 'First Name',
                           labelStyle: TextStyle( color:Color(0xFFCACACA))),
                         ),
                       ),
                     ),
-          
+
                     Flexible(
                       child: Padding(
-                        padding: EdgeInsets.all(30.0),
+                        padding: const EdgeInsets.all(30.0),
                         child: TextFormField(
                           controller: fatherLastController,
                           validator: (value) {
@@ -660,7 +666,7 @@ class _RegisterState extends State<Register> {
                             }
                             return null; // Return null if the input is valid
                           },
-                          decoration: InputDecoration(labelText: 'Last Name',
+                          decoration: const InputDecoration(labelText: 'Last Name',
                           labelStyle: TextStyle( color:Color(0xFFCACACA))),
                         ),
                       ),
@@ -669,11 +675,11 @@ class _RegisterState extends State<Register> {
                 ),
               ),
               Container(
-          
+
                 color: Colors.white,
                 child:  Row(
                   children: [
-                    SizedBox(width: 30,),
+                    const SizedBox(width: 30,),
                     Text("Gender",style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w700,
@@ -682,7 +688,7 @@ class _RegisterState extends State<Register> {
                     ),),
                   ],),
               ),
-          
+
               Padding(
                 padding: const EdgeInsets.only(right: 130),
                 child: Row(
@@ -700,7 +706,7 @@ class _RegisterState extends State<Register> {
                       fontWeight: FontWeight.w500,
                       fontSize: screenWidth < 400 ? 18 : 16,
                       fontFamily: 'Poppins.bold',
-                     color: Color(0xFFCACACA),
+                     color: const Color(0xFFCACACA),
                     ),),
                   // Radio(
                   //
@@ -721,7 +727,7 @@ class _RegisterState extends State<Register> {
                       fontWeight: FontWeight.w500,
                       fontSize: screenWidth < 400 ? 18 : 16,
                       fontFamily: 'Poppins.bold',
-                      color: Color(0xFFCACACA),
+                      color: const Color(0xFFCACACA),
                     ),),
                     //Radio(
                                       //
@@ -734,15 +740,15 @@ class _RegisterState extends State<Register> {
                   ],
                 ),
               ),
-          
-          
-             SizedBox(height: 25,),
+
+
+             const SizedBox(height: 25,),
               Container(
-          
+
                 color: Colors.white,
                 child:  Row(
                   children: [
-                    SizedBox(width: 30,),
+                    const SizedBox(width: 30,),
                     Text("Enter your Email",style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w700,
@@ -753,12 +759,12 @@ class _RegisterState extends State<Register> {
               ),
               Container(
                 color: Colors.white,
-          
+
                 child:  Row(
                   children: [
                     Flexible(
                       child: Padding(
-                        padding: EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.all(20.0),
                         child: TextFormField(
                           controller:emailController ,
                           onChanged: (value) {
@@ -808,18 +814,18 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
 
-          
-          
+
+
                   ],
                 ),
               ),
-              SizedBox(height: 25,),
+              const SizedBox(height: 25,),
               Container(
-          
+
                 color: Colors.white,
                 child:  Row(
                   children: [
-                    SizedBox(width: 30,),
+                    const SizedBox(width: 30,),
                     Text("Date of Birth",style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w700,
@@ -828,13 +834,13 @@ class _RegisterState extends State<Register> {
                     ),),
                   ],),
               ),
-             SizedBox(height: 10,),
+             const SizedBox(height: 10,),
 
               Padding(
-                padding: EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(20.0),
                 child: TextFormField(
                   readOnly: true,
-                  cursorColor: Color(0xFF9B9B9B),
+                  cursorColor: const Color(0xFF9B9B9B),
                   controller: dateOfBirthController,
                   focusNode: FocusNode(),
                   validator: (value) {
@@ -866,7 +872,7 @@ class _RegisterState extends State<Register> {
                         Icons.arrow_drop_down,
                       ),
                     ),
-                    suffixIconColor: Color(0xFF9B9B9B),
+                    suffixIconColor: const Color(0xFF9B9B9B),
                     prefixIcon: IconButton(
                       onPressed: () {
                         selectDatePicker();
@@ -875,18 +881,18 @@ class _RegisterState extends State<Register> {
                         Icons.calendar_month_outlined,
                       ),
                     ),
-                    prefixIconColor: Color(0xFF9B9B9B),
+                    prefixIconColor: const Color(0xFF9B9B9B),
                   ),
                 ),
               ),
 
-              SizedBox(height: 10,),
+              const SizedBox(height: 10,),
               Container(
-          
+
                 color: Colors.white,
                 child:  Row(
                   children: [
-                    SizedBox(width: 30,),
+                    const SizedBox(width: 30,),
                     Text("Birth Place",style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w700,
@@ -898,7 +904,7 @@ class _RegisterState extends State<Register> {
 
 
                Padding(
-                padding: EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(20.0),
                 child: TextFormField(
                   controller: birthStateController,
                   readOnly: true,
@@ -908,7 +914,7 @@ class _RegisterState extends State<Register> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Select Your Home State'),
+                          title: const Text('Select Your Home State'),
                           content: SingleChildScrollView(
                             child: Column(
                               children: indianStates.map((state) {
@@ -928,7 +934,7 @@ class _RegisterState extends State<Register> {
                       },
                     );
                   },
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Select Your Home State',
                     labelStyle: TextStyle(color: Color(0xFFCACACA)),
                     suffixIcon: Icon(Icons.arrow_drop_down),
@@ -941,13 +947,13 @@ class _RegisterState extends State<Register> {
                   },
                 ),
               ),
-              SizedBox(height: 15,),
+              const SizedBox(height: 15,),
              Container(
                child: Column(
                  children: [ Container( color: Colors.white,
                    child:  Row(
                      children: [
-                       SizedBox(width: 30,),
+                       const SizedBox(width: 30,),
                        Text("Contact Number",style: TextStyle(
                          color: Colors.black,
                          fontWeight: FontWeight.w700,
@@ -959,7 +965,7 @@ class _RegisterState extends State<Register> {
                      children: [
                        Flexible(
                          child: Padding(
-                           padding: EdgeInsets.all(20.0),
+                           padding: const EdgeInsets.all(20.0),
                            child: TextFormField(
                              controller:phoneNumberController ,
                              maxLength: 10,
@@ -974,47 +980,72 @@ class _RegisterState extends State<Register> {
                                return null; // Return null if the input is valid
                              },
                                keyboardType: TextInputType.number,
-                             decoration: InputDecoration(labelText: 'Phone Number',
+                             decoration: const InputDecoration(labelText: 'Phone Number',
                                  labelStyle: TextStyle( color:Color(0xFFCACACA))),
                            ),
                          ),
                        ),
                      ],
                    ),
-                   Row(
+                   Column(
+                     crossAxisAlignment: CrossAxisAlignment.start,
                      children: [
-                       Flexible(
-                         child: Padding(
-                           padding: EdgeInsets.all(20.0),
-                           child: TextFormField(
-                             controller: whatsAppNumberController,
-                             maxLength: 10,
-                             keyboardType: TextInputType.number,
-                             validator: (value) {
-                               if (value!.isEmpty) {
-                                 return 'Please enter Whatsapp number';
-                               }
-                               else if(value.length<10)
-                               {
-                                 return 'Number should contain 10 digit';
-                               }
-
-                               return null; // Return null if the input is valid
-                             },
-                             decoration: InputDecoration(labelText: 'Whatsapp Number',
-                                 labelStyle: TextStyle( color:Color(0xFFCACACA))),
+                       Row(
+                         children: [
+                           Expanded( // Use Expanded instead of Flexible
+                             child: Padding(
+                               padding: const EdgeInsets.all(20.0),
+                               child: TextFormField(
+                                 controller: whatsAppNumberController,
+                                 maxLength: 10,
+                                 keyboardType: TextInputType.number,
+                                 validator: (value) {
+                                   if (!SameasPhoneNumber && value!.isEmpty) {
+                                     return 'Please enter Whatsapp number';
+                                   } else if (!SameasPhoneNumber && value!.length < 10) {
+                                     return 'Number should contain 10 digit';
+                                   }
+                                   return null; // Return null if the input is valid
+                                 },
+                                 decoration: const InputDecoration(
+                                   labelText: 'Whatsapp Number',
+                                   labelStyle: TextStyle(color: Color(0xFFCACACA)),
+                                 ),
+                               ),
+                             ),
                            ),
-                         ),
+                         ],
+                       ),
+                       Padding(
+                         padding: const EdgeInsets.only(left: 10.0),
+                         child: Row(
+                           children: [
+                             Checkbox(value: SameasPhoneNumber, onChanged: (value){
+                               setState(() {
+                                 SameasPhoneNumber = value!;
+                                 if(value){
+                                   whatsAppNumberController.text = phoneNumberController.text;
+                                 }else{
+                                   whatsAppNumberController.clear();
+                                 }
+                               });
+                             }),
+                             const Text("Same as Phone Number")
+                           ],
+                         )
                        ),
                      ],
-                   ),],
+                   ),
+
+
+                 ],
                ),
              ),
-             SizedBox(height: 15,),
+             const SizedBox(height: 15,),
              Container( color: Colors.white,
                child:  Row(
                  children: [
-                   SizedBox(width: 20,),
+                   const SizedBox(width: 20,),
                    Text("College",style: TextStyle(
                      color: Colors.black,
                      fontWeight: FontWeight.w700,
@@ -1022,13 +1053,13 @@ class _RegisterState extends State<Register> {
                      fontFamily: 'FontMain',
                    ),),
                  ],),),
-          
+
               Row(
                 children: [
                   Flexible(
 
                     child: Padding(
-                      padding: EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: TextFormField(
                         controller: collageStateController,
                         readOnly: true,
@@ -1037,7 +1068,7 @@ class _RegisterState extends State<Register> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text('Select Your College State'),
+                                title: const Text('Select Your College State'),
                                 content: SingleChildScrollView(
                                   child: Column(
                                     children: indianStates.map((state) {
@@ -1057,7 +1088,7 @@ class _RegisterState extends State<Register> {
                             },
                           );
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Select Your College State',
                           labelStyle: TextStyle(color: Color(0xFFCACACA)),
                           suffixIcon: Icon(Icons.arrow_drop_down),
@@ -1080,7 +1111,7 @@ class _RegisterState extends State<Register> {
                 children: [
                   Flexible(
                     child: Padding(
-                      padding: EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: TextFormField(
                         controller: collageNameController,
                         validator: (value) {
@@ -1089,7 +1120,7 @@ class _RegisterState extends State<Register> {
                           }
                           return null; // Return null if the input is valid
                         },
-                        decoration: InputDecoration(labelText: 'College Name',
+                        decoration: const InputDecoration(labelText: 'College Name',
                             labelStyle: TextStyle( color:Color(0xFFCACACA)
 
                             ),
@@ -1105,7 +1136,7 @@ class _RegisterState extends State<Register> {
                 children: [
                   Flexible(
                     child: Padding(
-                      padding: EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: TextFormField(
                         controller: branchNameController,
                         readOnly: true,
@@ -1115,7 +1146,7 @@ class _RegisterState extends State<Register> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text('Select Your Branch'),
+                                title: const Text('Select Your Branch'),
                                 content: SingleChildScrollView(
                                   child: Column(
                                     children: Branch.map((Branch) {
@@ -1135,7 +1166,7 @@ class _RegisterState extends State<Register> {
                             },
                           );
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Select Your Branch',
                           labelStyle: TextStyle(color: Color(0xFFCACACA)),
                           suffixIcon: Icon(Icons.arrow_drop_down),
@@ -1155,7 +1186,7 @@ class _RegisterState extends State<Register> {
                 children: [
                   Flexible(
                     child: Padding(
-                      padding: EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: TextFormField(
                         controller: DegreeNameController,
                         readOnly: true,
@@ -1165,7 +1196,7 @@ class _RegisterState extends State<Register> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text('Degree Name'),
+                                title: const Text('Degree Name'),
                                 content: SingleChildScrollView(
                                   child: Column(
                                     children: Degree.map((Degree) {
@@ -1185,7 +1216,7 @@ class _RegisterState extends State<Register> {
                             },
                           );
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Degree Name',
                           labelStyle: TextStyle(color: Color(0xFFCACACA)),
                           suffixIcon: Icon(Icons.arrow_drop_down),
@@ -1221,7 +1252,7 @@ class _RegisterState extends State<Register> {
                     // ),
 
               child: Padding(
-              padding: EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(20.0),
           child: TextFormField(
             controller: passingYearController,
             readOnly: true,
@@ -1233,7 +1264,7 @@ class _RegisterState extends State<Register> {
               return null;
             },
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Year',
               labelStyle: TextStyle(color: Color(0xFFCACACA)),
               suffixIcon: Icon(Icons.arrow_drop_down),
@@ -1243,13 +1274,13 @@ class _RegisterState extends State<Register> {
                   ),
                 ],
               ),
-              SizedBox(height: 15,),
+              const SizedBox(height: 15,),
               Container(
-          
+
                 color: Colors.white,
                 child:  Row(
                   children: [
-                    SizedBox(width: 30,),
+                    const SizedBox(width: 40,),
                     Text("Create Your Password",style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w700,
@@ -1258,8 +1289,8 @@ class _RegisterState extends State<Register> {
                     ),),
                   ],),
               ),
-              SizedBox(height: 15,),
-          
+              const SizedBox(height: 15,),
+
               Padding(
                 padding: const EdgeInsets.only(left: 66, right: 58),
 
@@ -1273,13 +1304,13 @@ class _RegisterState extends State<Register> {
                          return null; // Return null if the input is valid
                        },
                   decoration: InputDecoration(
-                    enabledBorder: UnderlineInputBorder(
+                    enabledBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFFCACACA)),
                     ),
-                    focusedBorder: UnderlineInputBorder(
+                    focusedBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFFCACACA)),
                     ),
-                    prefixIcon: Padding(
+                    prefixIcon: const Padding(
                       padding: EdgeInsets.only(right: 20),
                       child: Icon(
                         Icons.lock,
@@ -1295,12 +1326,12 @@ class _RegisterState extends State<Register> {
                       },
                       icon: Icon(
                         isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                        color: Color(0xFF9B9B9B),
+                        color: const Color(0xFF9B9B9B),
                       ),
                     ),
                     hintText: 'Password',
                     hintStyle: TextStyle(
-                      color: Color(0xFF9B9B9B),
+                      color: const Color(0xFF9B9B9B),
                       fontSize: screenWidth < 400 ? 13 : 15,
                       fontWeight: FontWeight.w500,
                     ),
@@ -1320,13 +1351,13 @@ class _RegisterState extends State<Register> {
                     return null; // Return null if the input is valid
                   },
                   decoration: InputDecoration(
-                    enabledBorder: UnderlineInputBorder(
+                    enabledBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFFCACACA)),
                     ),
-                    focusedBorder: UnderlineInputBorder(
+                    focusedBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFFCACACA)),
                     ),
-                    prefixIcon: Padding(
+                    prefixIcon: const Padding(
                       padding: EdgeInsets.only(right: 20),
                       child: Icon(
                         Icons.lock,
@@ -1342,11 +1373,11 @@ class _RegisterState extends State<Register> {
                       },
                       icon: Icon(
                         isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                        color: Color(0xFF9B9B9B),
+                        color: const Color(0xFF9B9B9B),
                       ),
                     ),
                     hintText: 'Confirm Password',
-                    hintStyle: TextStyle(
+                    hintStyle: const TextStyle(
                       color: Color(0xFF9B9B9B),
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
@@ -1354,112 +1385,140 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
               ),
-              SizedBox(height: 35,),
-              ElevatedButton(onPressed: ()    {
+              const SizedBox(height: 35,),
+              ElevatedButton(onPressed: () async  {
+                await checkInternetConnection();
+                if(_isConnected) {
+                  print("Internet avilable");
+                  if (_formKey.currentState?.validate() == true) {
+                    print("All feilds are filled");
+                    if (passwordController.text !=
+                        conformPasswordController.text) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Stack(
+                            children: [
+                              // Blurred background
+                              BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                                child: Container(
+                                  color: Colors.black.withOpacity(0.5),
+                                  // Adjust the opacity as needed
+                                  width: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width,
+                                  height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height,
+                                ),
+                              ),
+                              // AlertDialog on top of the blurred background
+                              AlertDialog(
+                                backgroundColor: Colors.white,
+                                surfaceTintColor: Colors.transparent,
+                                // Set the background color to transparent
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const SizedBox(height: 30),
+                                    const Center(
+                                      child: Text(
+                                        "Password Mismatch",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily: "FontMain",
+                                          fontSize: 18,
+                                          color: Color(0xFFBD232B),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 35),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        // Pop the current route (the AlertDialog)
+                                        Navigator.of(context).pop();
 
-              //validateEmail(emailController.text);
-                if (_formKey.currentState?.validate() == true) {
+                                        // Add any additional logic here
 
-                 print("All feilds are filled");
-                   if(passwordController.text != conformPasswordController.text){
-
-                     showDialog(
-                       context: context,
-                       builder: (BuildContext context) {
-                         return Stack(
-                           children: [
-                             // Blurred background
-                             BackdropFilter(
-                               filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                               child: Container(
-                                 color: Colors.black.withOpacity(0.5), // Adjust the opacity as needed
-                                 width: MediaQuery.of(context).size.width,
-                                 height: MediaQuery.of(context).size.height,
-                               ),
-                             ),
-                             // AlertDialog on top of the blurred background
-                             AlertDialog(
-                               backgroundColor: Colors.white,
-                               surfaceTintColor: Colors.transparent,// Set the background color to transparent
-                               content: Column(
-                                 mainAxisSize: MainAxisSize.min,
-                                 children: [
-                                   SizedBox(height: 30),
-                                   Center(
-                                     child: Text(
-                                       "Password Mismatch",
-                                       textAlign: TextAlign.center,
-                                       style: TextStyle(
-                                         fontFamily: "FontMain",
-                                         fontSize: 18,
-                                         color: Color(0xFFBD232B),
-                                       ),
-                                     ),
-                                   ),
-                                   SizedBox(height: 35),
-                                   ElevatedButton(
-                                     onPressed: () {
-                                       // Pop the current route (the AlertDialog)
-                                       Navigator.of(context).pop();
-
-                                       // Add any additional logic here
-
-                                     },
-                                     style: ElevatedButton.styleFrom(
-                                       backgroundColor: const Color(0xFFF13640),
-                                       minimumSize: Size(250, 50),
-                                       shape: RoundedRectangleBorder(
-                                         borderRadius: BorderRadius.circular(30),
-                                       ),
-                                     ),
-                                     child: const Text(
-                                       "OK",
-                                       style: TextStyle(
-                                         color: Colors.white,
-                                         fontWeight: FontWeight.w700,
-                                         fontSize: 20,
-                                       ),
-                                     ),
-                                   ),
-                                 ],
-                               ),
-                             ),
-                           ],
-                         );
-                       },
-                     );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(
+                                            0xFFF13640),
+                                        minimumSize: const Size(250, 50),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              30),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        "OK",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }else {
+                      checkEmailExistence();
+                    }
+                  }else {
+                    // Form is not valid, show error message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please fix the errors in the form.'),
+                      ),
+                    );
                   }
-
-                 else{
-                   checkEmailExistence();
-                 }
-
-                }
-
-                else {
-                  // Form is not valid, show error message
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Please fix the errors in the form.'),
+                }else{
+                  print("No internet connection");
+                  showDialog(
+                    context: context,
+                    builder: (context) => Theme(
+                      data: ThemeData(
+                        dialogBackgroundColor: Colors.redAccent, // Change the color here
+                      ),
+                      child: AlertDialog(
+                        title: const Text('No Internet Connection', style: TextStyle(color: Colors.white,fontFamily: "FontMain")), // Change title color here
+                        content: const Text('Please check your internet connection.', style: TextStyle(color: Colors.white)), // Change content color here
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('OK', style: TextStyle(color: Colors.white)), // Change button text color here
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 }
 
 
-               //submitVerification();
-              },style: ElevatedButton.styleFrom(
+                },
+                  style: ElevatedButton.styleFrom(
                     backgroundColor:const Color(0xFFF13640),
                     shape:RoundedRectangleBorder(
                       borderRadius:BorderRadius.circular(20)
                     ),
-              ), child: Text("Submit",style: TextStyle(
+              ), child: const Text("Submit",style: TextStyle(
                 color:Colors.white,
                 fontWeight:FontWeight.w700,
                  fontSize:25,
               ),)),
-              SizedBox(height: 35,),
-          
-          
+              const SizedBox(height: 35,),
+
+
             ],
           ),
         ),

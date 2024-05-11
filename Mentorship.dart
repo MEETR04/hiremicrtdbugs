@@ -1,10 +1,9 @@
 import 'dart:convert';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:hiremi/HomePage.dart';
-import 'package:hiremi/PhonePePayment.dart';
 import 'package:hiremi/api_services/base_services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui';
 
@@ -18,14 +17,15 @@ class Mentorship extends StatefulWidget {
 class _MentorshipState extends State<Mentorship> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     AlreadyApplied();
     _loadUserEmail();
+    checkInternetConnection();
   }
 
   String loginEmail = "";
   int Uid = 0;
+  bool _isConnected = false;
   // or whatever default value you want to assign
   bool hasAlreadyApplied = false;
   Future<void> _loadUserEmail() async {
@@ -35,6 +35,18 @@ class _MentorshipState extends State<Mentorship> {
     if (savedUsername != null && savedUsername.isNotEmpty) {
       setState(() {
         loginEmail = savedUsername;
+      });
+    }
+  }
+  Future<void> checkInternetConnection() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _isConnected = false;
+      });
+    } else {
+      setState(() {
+        _isConnected = true;
       });
     }
   }
@@ -125,15 +137,6 @@ class _MentorshipState extends State<Mentorship> {
       );
 
       if (response.statusCode == 201) {
-        // Successfully updated the "Applied" field
-
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => HomePage(sourceScreen: '', uid: '', username: '', verificationId: ''),
-        //   ),
-        // );
-
         await ShowDialog();
         print('Applied successfully!');
         print('ApplyNow Response Code: ${response.statusCode}');
@@ -167,7 +170,7 @@ class _MentorshipState extends State<Mentorship> {
             Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage("your_background_image_path"),
                   fit: BoxFit.cover,
@@ -197,7 +200,7 @@ class _MentorshipState extends State<Mentorship> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8.0),
                   ),
-                  child: Column(
+                  child: const Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
@@ -259,44 +262,12 @@ class _MentorshipState extends State<Mentorship> {
                 surfaceTintColor: Colors
                     .transparent, // Set the background color to transparent
                 actions: [
-                  // Column(
-                  //   children: [
-                  //     Center(
-                  //       child: RichText(
-                  //         textAlign: TextAlign.center,
-                  //         text: TextSpan(
-                  //           style: TextStyle(
-                  //             fontFamily: "FontMain",
-                  //             fontSize: 15,
-                  //             color: Colors.black, // Default color for other text
-                  //           ),
-                  //           children: [
-                  //             TextSpan(
-                  //               text: "You have applied for ",
-                  //             ),
-                  //             TextSpan(
-                  //               text: Intern_Profile,
-                  //               style: TextStyle(
-                  //                 fontWeight: FontWeight.bold, // Make JobProfile text bold
-                  //                 color: Color(0xFFBD232B), // Desired color for JobProfile text
-                  //               ),
-                  //             ),
-                  //             TextSpan(
-                  //               text: " internship position. We will update you after the interview.",
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     SizedBox(height: 20),
-                  //   ],
-                  // ),
                   Column(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 30,
                       ),
-                      Center(
+                      const Center(
                         child: Text(
                           "Ready to begin your mentorship journey", // Your leading text
                           textAlign: TextAlign.center,
@@ -307,7 +278,7 @@ class _MentorshipState extends State<Mentorship> {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 30,
                       ),
                       Row(
@@ -319,13 +290,13 @@ class _MentorshipState extends State<Mentorship> {
                               await loadUserUid();
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFFF13640),
-                              minimumSize: Size(50, 5),
+                              backgroundColor: const Color(0xFFF13640),
+                              minimumSize: const Size(50, 5),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
                             ),
-                            child: Text(
+                            child: const Text(
                               "Yes",
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -341,12 +312,12 @@ class _MentorshipState extends State<Mentorship> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
-                              minimumSize: Size(50, 5),
+                              minimumSize: const Size(50, 5),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
                             ),
-                            child: Text(
+                            child: const Text(
                               "No",
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -419,7 +390,7 @@ class _MentorshipState extends State<Mentorship> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) {
-                                  return HomePage(
+                                  return const HomePage(
                                     sourceScreen: '',
                                     uid: '',
                                     username: '',
@@ -444,15 +415,15 @@ class _MentorshipState extends State<Mentorship> {
                   SizedBox(
                     height: screenHeight * 0.027,
                   ),
-
-                  Container(
+                  //sliding starts
+                  SizedBox(
                     height: screenHeight * 0.19,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: List.generate(
                         3,
                         (index) => Padding(
-                          padding: EdgeInsets.only(left: 28.0),
+                          padding: const EdgeInsets.only(left: 28.0),
                           child: Stack(
                             children: [
                               ClipRRect(
@@ -460,7 +431,7 @@ class _MentorshipState extends State<Mentorship> {
                                 child: Container(
                                   width: 350,
                                   height: 180,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     gradient: LinearGradient(
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
@@ -477,20 +448,20 @@ class _MentorshipState extends State<Mentorship> {
                                 children: [
                                   SizedBox(height: screenHeight * 0.015),
                                   Padding(
-                                    padding: const EdgeInsets.only(right: 170.0,left: 5),
+                                    padding: const EdgeInsets.only(
+                                        right: 170.0, left: 5),
                                     child: Text(
-                                        getTextForIndex(index),
-                                        textAlign: TextAlign.justify,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize:
-                                              screenHeight < 700 ? 13.5 : 17,
-                                          fontFamily: 'FontMain',
-                                        ),
+                                      getTextForIndex(index),
+                                      textAlign: TextAlign.justify,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize:
+                                            screenHeight < 700 ? 13.5 : 17,
+                                        fontFamily: 'FontMain',
                                       ),
-
+                                    ),
                                   ),
-                                  SizedBox(height: 7.5),
+                                  const SizedBox(height: 7.5),
                                   Padding(
                                     padding: const EdgeInsets.only(right: 70),
                                     child: Text(
@@ -516,6 +487,7 @@ class _MentorshipState extends State<Mentorship> {
                       ),
                     ),
                   ),
+                  //sliding ending
 
                   SizedBox(
                     height: screenHeight * 0.033,
@@ -534,10 +506,6 @@ class _MentorshipState extends State<Mentorship> {
                   SizedBox(
                     height: screenHeight * 0.026,
                   ),
-                  // Text("Mentorship at Hiremi is a dynamic partnership designed to"
-                  //     "foster professional and academic growth.It's a collaborative"
-                  //     "relationship between experienced mentors and individuals"
-                  //     "seeking guidance in their career or academic pursuits.",
                   Padding(
                     padding: const EdgeInsets.only(left: 15, right: 15),
                     child: Text(
@@ -569,8 +537,7 @@ class _MentorshipState extends State<Mentorship> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                      top: 40, left: 13
-                                    ),
+                                        top: 40, left: 13),
                                     child: Text(
                                       "Standard",
                                       textAlign: TextAlign.center,
@@ -593,17 +560,15 @@ class _MentorshipState extends State<Mentorship> {
                                           color: Colors
                                               .black, // You can change the color if needed
                                         ),
-                                        children: [
+                                        children: const [
                                           TextSpan(
                                             text: "Rs 10000",
                                           ),
                                           TextSpan(
-                                            text:
-                                                "/25000", // This will remain unstruck
+                                            text: "/25000",
                                             style: TextStyle(
                                               decoration:
                                                   TextDecoration.lineThrough,
-                                              // To remove the decoration from this part
                                             ),
                                           ),
                                         ],
@@ -628,7 +593,7 @@ class _MentorshipState extends State<Mentorship> {
                                               child: Container(
                                                 height: screenHeight * 0.0154,
                                                 width: screenWidth * 0.0315,
-                                                decoration: BoxDecoration(
+                                                decoration: const BoxDecoration(
                                                   shape: BoxShape.circle,
                                                   color: Colors.white,
                                                 ),
@@ -658,8 +623,7 @@ class _MentorshipState extends State<Mentorship> {
                               )),
                         ),
                         Padding(
-                          padding:
-                              const EdgeInsets.only(left: 200.0),
+                          padding: const EdgeInsets.only(left: 200.0),
                           child: Card(
                               elevation: 15.0,
                               surfaceTintColor:
@@ -672,7 +636,7 @@ class _MentorshipState extends State<Mentorship> {
                                     style: TextStyle(
                                       fontFamily: 'FontMain',
                                       fontSize: screenWidth < 411 ? 18 : 21,
-                                      color: Color(0xFFF13640),
+                                      color: const Color(0xFFF13640),
                                     ),
                                   ),
                                 ],
@@ -793,7 +757,7 @@ class _MentorshipState extends State<Mentorship> {
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Text(
@@ -935,62 +899,9 @@ class _MentorshipState extends State<Mentorship> {
                   SizedBox(
                     height: screenHeight * 0.0415,
                   ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     Image.asset("images/Medical.png"),
-                  //     SizedBox(width: screenWidth*0.018,),
-                  //     Column(
-                  //       children: [
-                  //         Padding(
-                  //           padding: const EdgeInsets.only(right: 170.0),
-                  //           child: Text("College Students:",
-                  //             textAlign: TextAlign.center,
-                  //             style: TextStyle(
-                  //               color: Colors.redAccent,
-                  //               fontFamily: 'FontMain',
-                  //               fontSize: screenWidth < 411 ? 9: 12,
-                  //             ),),
-                  //         ),
-                  //         Text("Mentorship aids students in navigating\ntheir academic journey, making\ninformed careerchoices, and\npreparing for the professional\nworld.",
-                  //           textAlign: TextAlign.center,
-                  //           style: TextStyle(
-                  //             fontFamily: "FontMain",
-                  //             fontSize: screenWidth < 411 ? 9: 11,
-                  //           ),)
-                  //       ],
-                  //     ),
-                  //   ],
-                  // ),
                   SizedBox(
                     height: screenHeight * 0.03,
                   ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     Image.asset("images/Profe.png"),
-                  //     SizedBox(width: screenWidth*0.0608,),
-                  //     Column(
-                  //       children: [
-                  //         Padding(
-                  //           padding: const EdgeInsets.only(right: 170.0),
-                  //           child: Text("Professionals:",style: TextStyle(
-                  //             color: Colors.redAccent,
-                  //             fontFamily: 'FontMain',
-                  //             fontSize: screenWidth < 411  ? 9: 13,
-                  //           ),),
-                  //         ),
-                  //         Text("Even experienced professionals\nbenefit by receiving guidance on\ncareer advancement, leadership skills,\nand staying relevant in a rapidly\nchanging work environment.",
-                  //           textAlign: TextAlign.center,
-                  //           style: TextStyle(
-                  //             fontFamily: "FontMain",
-                  //             fontSize: screenWidth < 411 ? 9: 12,
-                  //           ),)
-                  //       ],
-                  //     ),
-                  //   ],
-                  // ),
-
                   Text(
                     "How to Apply for Mentorship?",
                     textAlign: TextAlign.center,
@@ -1010,71 +921,8 @@ class _MentorshipState extends State<Mentorship> {
                           Image.asset("images/Rocket.png"),
                         ],
                       ),
-                      // SizedBox(width: screenWidth*0.060,),
-                      // Column(
-                      //   children: [
-                      //     Padding(
-                      //       padding: const EdgeInsets.only(right: 170.0),
-                      //       child: Text("Step 1:",style: TextStyle(
-                      //         color: Colors.redAccent,
-                      //         fontFamily: 'FontMain',
-                      //         fontSize: screenWidth < 411  ? 11: 14,
-                      //       ),),
-                      //     ),
-                      //     Text(" Tap on Apply\nLaunch the Hiremi app\nand head to the\nMentorship section.\nLook for the'Apply Now' option\nand tap on it to begin\nyour application process.",
-                      //       textAlign: TextAlign.center,
-                      //       style: TextStyle(
-                      //         fontFamily: "FontMain",
-                      //         fontSize: screenWidth < 411 ? 9: 11,
-                      //       ),)
-                      //   ],
-                      // ),
                       Column(
                         children: [
-                          // Heading before Step 1
-
-                          // Step 1
-                          // Padding(
-                          //   padding: const EdgeInsets.only(right: 170.0),
-                          //   child: Text(
-                          //     "Step 1:",
-                          //     style: TextStyle(
-                          //       color: Colors.redAccent,
-                          //       fontFamily: 'FontMain',
-                          //       fontSize: screenWidth < 411 ? 11 : 14,
-                          //     ),
-                          //   ),
-                          // ),
-                          //
-                          // // Description Text
-                          // Padding(
-                          //   padding: const EdgeInsets.only(right: 170.0),
-                          //   child: Text(
-                          //     "Tap to Apply", // Your bold heading text
-                          //     style: TextStyle(
-                          //       fontFamily: 'FontMain',
-                          //       fontSize: screenWidth < 411 ? 9 : 12,
-                          //       fontWeight: FontWeight.bold, // Set the font weight to bold
-                          //     ),
-                          //   ),
-                          // ),
-                          // Text(
-                          //     "1.Launch the Hiremi appand\nhead to the Mentorship section.",
-                          //     textAlign: TextAlign.center,
-                          //     style: TextStyle(
-                          //       fontFamily: "FontMain",
-                          //       fontSize: screenWidth < 411 ? 9 : 12,
-                          //     ),
-                          //   ),
-                          // SizedBox(height: 5,),
-                          // Text(
-                          //     "2.Look for the apply now option \n and tap on it to begin your\n application process.",
-                          //     textAlign: TextAlign.center,
-                          //     style: TextStyle(
-                          //       fontFamily: "FontMain",
-                          //       fontSize: screenWidth < 411 ? 9 : 11,
-                          //     ),
-                          //   ),
                           Padding(
                             padding: const EdgeInsets.only(right: 170.0),
                             child: Text(
@@ -1085,8 +933,8 @@ class _MentorshipState extends State<Mentorship> {
                                   fontSize: screenWidth < 411 ? 11 : 11.5),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 135),
+                          const Padding(
+                            padding: EdgeInsets.only(right: 135),
                             child: Text(
                               "Tap to apply",
                               style: TextStyle(
@@ -1098,18 +946,25 @@ class _MentorshipState extends State<Mentorship> {
                           Padding(
                             padding: const EdgeInsets.only(top: 5),
                             child: Text(
-                              "1.Launch the Hiremi appand\nhead to the Mentorship section.",textAlign: TextAlign.justify,
-                              style:
-                                  TextStyle(fontFamily: "FontMain", fontSize: screenWidth < 411 ? 9.4 : 11,),
+                              "1.Launch the Hiremi appand\nhead to the Mentorship section.",
+                              textAlign: TextAlign.justify,
+                              style: TextStyle(
+                                fontFamily: "FontMain",
+                                fontSize: screenWidth < 411 ? 9.4 : 11,
+                              ),
                             ),
                           ),
-                          SizedBox(height: 3.5,),
-                          Text(
-                            "2.Look for the apply now option \n and tap on it to begin your\n application process.",textAlign: TextAlign.justify,
-                            style:
-                            TextStyle(fontFamily: "FontMain", fontSize: screenWidth < 411 ? 9.4 : 11,),
+                          const SizedBox(
+                            height: 3.5,
                           ),
-
+                          Text(
+                            "2.Look for the apply now option \n and tap on it to begin your\n application process.",
+                            textAlign: TextAlign.justify,
+                            style: TextStyle(
+                              fontFamily: "FontMain",
+                              fontSize: screenWidth < 411 ? 9.4 : 11,
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -1126,92 +981,49 @@ class _MentorshipState extends State<Mentorship> {
                       ),
                       Column(
                         children: [
-                        //   Padding(
-                        //     padding: const EdgeInsets.only(right: 170.0),
-                        //     child: Text(
-                        //       "Step 2:",
-                        //       style: TextStyle(
-                        //         color: Colors.redAccent,
-                        //         fontFamily: 'FontMain',
-                        //         fontSize: screenWidth < 411 ? 11 : 13,
-                        //       ),
-                        //     ),
-                        //   ),
-                        //   Padding(
-                        //     padding: const EdgeInsets.only(right: 130.0),
-                        //     child: Text(
-                        //       "Q&A Session:", // Your bold heading text
-                        //       style: TextStyle(
-                        //         fontFamily: 'FontMain',
-                        //         fontSize: screenWidth < 411 ? 11 : 13,
-                        //         fontWeight: FontWeight
-                        //             .bold, // Set the font weight to bold
-                        //       ),
-                        //     ),
-                        //   ),
-                        //   Padding(
-                        //     padding: const EdgeInsets.only(right: 25),
-                        //     child: Text(
-                        //       "1.Once your session is\nscheduled,you will receive a\n notification",
-                        //       textAlign: TextAlign.left,
-                        //       style: TextStyle(
-                        //         fontFamily: "FontMain",
-                        //         //fontSize: screenWidth < 411 ? 9 : 11,
-                        //         fontSize: 9
-                        //       ),
-                        //     ),
-                        //   ),
-                        //   SizedBox(
-                        //     height: 5,
-                        //   ),
-                        //   Padding(
-                        //     padding: const EdgeInsets.only(right: 25),
-                        //     child: Text(
-                        //       "2.During the session ,you'll\nhave to opportunity to\ndiscuss your queires and\ncareer aspiration with our\nexperienced mentors",
-                        //       textAlign: TextAlign.left,
-                        //       style: TextStyle(
-                        //         fontFamily: "FontMain",
-                        //         //fontSize: screenWidth < 411 ? 9 : 11,
-                        //         fontSize: 9
-                        //       ),
-                        //     ),
-                        //   ),
-                         Padding(
-                           padding: const EdgeInsets.only(right: 140),
-                           child: Text(
-                                "Step 2:",
-                                style: TextStyle(
-                                    color: Colors.redAccent,
-                                    fontFamily: "FontMain",
-                                    fontSize: screenWidth < 411 ? 11 : 11.5),
-                              ),
-                         ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 104),
-                              child: Text(
-                                "Q&A Session:",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontFamily: "FontMain",
-                                    fontSize: 11),
-                              ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 140),
+                            child: Text(
+                              "Step 2:",
+                              style: TextStyle(
+                                  color: Colors.redAccent,
+                                  fontFamily: "FontMain",
+                                  fontSize: screenWidth < 411 ? 11 : 11.5),
                             ),
-
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(right: 104),
+                            child: Text(
+                              "Q&A Session:",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: "FontMain",
+                                  fontSize: 11),
+                            ),
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(top: 5),
                             child: Text(
-                              "1.Once your session is\nscheduled,you will receive a\n notification.",textAlign: TextAlign.justify,
-                              style:
-                              TextStyle(fontFamily: "FontMain", fontSize: screenWidth < 411 ? 9 : 11,),
+                              "1.Once your session is\nscheduled,you will receive a\n notification.",
+                              textAlign: TextAlign.justify,
+                              style: TextStyle(
+                                fontFamily: "FontMain",
+                                fontSize: screenWidth < 411 ? 9 : 11,
+                              ),
                             ),
                           ),
-                          SizedBox(height: 3.5,),
-                          Text(
-                            "2.During the session ,you'll\nhave to opportunity to\ndiscuss your queires and\ncareer aspiration with our\nexperienced mentors.",textAlign: TextAlign.justify,
-                            style:
-                            TextStyle(fontFamily: "FontMain", fontSize: screenWidth < 411 ? 9 : 11,),
+                          const SizedBox(
+                            height: 3.5,
                           ),
-                         ],
+                          Text(
+                            "2.During the session ,you'll\nhave to opportunity to\ndiscuss your queires and\ncareer aspiration with our\nexperienced mentors.",
+                            textAlign: TextAlign.justify,
+                            style: TextStyle(
+                              fontFamily: "FontMain",
+                              fontSize: screenWidth < 411 ? 9 : 11,
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(
                         width: screenWidth * 0.036,
@@ -1240,48 +1052,6 @@ class _MentorshipState extends State<Mentorship> {
                       ),
                       Column(
                         children: [
-                          // Padding(
-                          //   padding: const EdgeInsets.only(right: 170.0),
-                          //   child: Text(
-                          //     "Step 3:",
-                          //     style: TextStyle(
-                          //       color: Colors.redAccent,
-                          //       fontFamily: 'FontMain',
-                          //       fontSize: screenWidth < 411 ? 7.5 : 11.4,
-                          //     ),
-                          //   ),
-                          // ),
-                          // Padding(
-                          //   padding: const EdgeInsets.only(right: 70.0),
-                          //   child: Text(
-                          //     "Enroll in the program:", // Your bold heading text
-                          //     style: TextStyle(
-                          //       fontFamily: 'FontMain',
-                          //       fontSize: screenWidth < 411 ? 11 : 13,
-                          //       fontWeight: FontWeight
-                          //           .bold, // Set the font weight to bold
-                          //     ),
-                          //   ),
-                          // ),
-                          // Text(
-                          //   "1.After selection, gain exclusive\naccess to enroll in our mentorship\nprogram via the app by\ncompleting payment process.",
-                          //   textAlign: TextAlign.center,
-                          //   style: TextStyle(
-                          //     fontFamily: "FontMain",
-                          //     fontSize: screenWidth < 411 ? 9.4 : 11,
-                          //   ),
-                          // ),
-                          // SizedBox(
-                          //   height: 5,
-                          // ),
-                          // Text(
-                          //   "2.Get ready for a transformative\nexperience in skill development,\nreal-time project exposure, and\ncareer growth.",
-                          //   textAlign: TextAlign.center,
-                          //   style: TextStyle(
-                          //     fontFamily: "FontMain",
-                          //     fontSize: screenWidth < 411 ? 9.4 : 11,
-                          //   ),
-                          // )
                           Padding(
                             padding: const EdgeInsets.only(right: 149),
                             child: Text(
@@ -1292,33 +1062,39 @@ class _MentorshipState extends State<Mentorship> {
                                   fontSize: screenWidth < 411 ? 11 : 11.5),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(right:60),
+                          const Padding(
+                            padding: EdgeInsets.only(right: 60),
                             child: Text(
-                                "Enroll in the program:",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontFamily: "FontMain",
-                                    fontSize: 11),
-                              ),
-                          ),
-
-
-                          Padding(
-                            padding: const EdgeInsets.only(left: 23,top: 5),
-                            child: Text(
-                              "1.After selection, gain exclusive\naccess to enroll in our mentor-\nship program via the app by\ncompleting payment process.",textAlign: TextAlign.justify,
-                              style:
-                              TextStyle(fontFamily: "FontMain", fontSize: screenWidth < 411 ? 9 : 11,),
+                              "Enroll in the program:",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: "FontMain",
+                                  fontSize: 11),
                             ),
                           ),
-                          SizedBox(height: 3.5,),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 23, top: 5),
+                            child: Text(
+                              "1.After selection, gain exclusive\naccess to enroll in our mentor-\nship program via the app by\ncompleting payment process.",
+                              textAlign: TextAlign.justify,
+                              style: TextStyle(
+                                fontFamily: "FontMain",
+                                fontSize: screenWidth < 411 ? 9 : 11,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 3.5,
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(left: 18),
                             child: Text(
-                              "2.Get ready for a transformative\nexperience in skill development,\nreal-time project exposure, and\ncareer growth.",textAlign: TextAlign.justify,
-                              style:
-                              TextStyle(fontFamily: "FontMain", fontSize: screenWidth < 411 ? 9 : 11,),
+                              "2.Get ready for a transformative\nexperience in skill development,\nreal-time project exposure, and\ncareer growth.",
+                              textAlign: TextAlign.justify,
+                              style: TextStyle(
+                                fontFamily: "FontMain",
+                                fontSize: screenWidth < 411 ? 9 : 11,
+                              ),
                             ),
                           ),
                         ],
@@ -1335,29 +1111,53 @@ class _MentorshipState extends State<Mentorship> {
               bottom: 0,
               left: 0,
               right: 0,
-              child: Container(
+              child: SizedBox(
                 height: screenHeight * 0.0711, // Adjust the height as needed
                 // Adjust the color as needed
                 child: Center(
                   child: ElevatedButton(
                     onPressed: () async {
+                      await checkInternetConnection();
                       await AlreadyApplied();
+                      if(_isConnected){
+                        if (hasAlreadyApplied) {
+                          // User has already applied, disable the button
+                          return;
+                        } else {
+                          await _showConformationDialog();
+                          // await ShowDialog();
+                        }
+                      }else{
+                        print("No internet connection");
+                        showDialog(
+                          context: context,
+                          builder: (context) => Theme(
+                            data: ThemeData(
+                              dialogBackgroundColor: Colors.redAccent, // Change the color here
+                            ),
+                            child: AlertDialog(
+                              title: const Text('No Internet Connection', style: TextStyle(color: Colors.white,fontFamily: "FontMain")), // Change title color here
+                              content: const Text('Please check your internet connection.', style: TextStyle(color: Colors.white)), // Change content color here
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('OK', style: TextStyle(color: Colors.white)), // Change button text color here
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
 
-                      if (hasAlreadyApplied) {
-                        // User has already applied, disable the button
-                        return null;
-                      } else {
-                        // User has not applied, handle button click logic here
-                        //  await loadUserUid();
-                        await _showConformationDialog();
-                        // await ShowDialog();
                       }
+
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: hasAlreadyApplied
                           ? Colors.grey
                           : const Color(0xFFF13640),
-                      minimumSize: Size(250, 50),
+                      minimumSize: const Size(250, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
