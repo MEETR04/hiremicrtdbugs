@@ -36,7 +36,7 @@ Data caching in Internship.dart https://github.com/MEETR04/hiremicrtdbugs/blob/m
 
 New BUGS ::::::::::::::::::::::::::::::::::: 11-05-24
 
-1. Check Internet Connection on SignIn(SignIn.dart), Register(Register.dart), Apply button(CorporateTraining.dart and Mentorship.dart).
+1. Check Internet Connection on SignIn(SignIn.dart), Register(Register.dart) and Apply buttons(CorporateTraining.dart and Mentorship.dart) when clicked.
 2. Improper Images Sizes in HomePage.dart 
 3. Added Same as Phone Number checkbox in Register.dart, below WhatsApp number field...
 4. Removed Unnecessary Code.
