@@ -51,7 +51,7 @@ class _SettingsState extends State<Settings> {
       });
 
       // Replace the API URL with your actual API endpoint
-      final apiUrl = '${ApiUrls.baseurl}api/registers/';
+      const apiUrl = '${ApiUrls.baseurl}api/registers/';
 
       try {
         final response = await http.get(Uri.parse(apiUrl));
@@ -123,7 +123,7 @@ class _SettingsState extends State<Settings> {
                 //     ),
                 //   ),
                 // ),
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.10,
                   child: Center(
@@ -156,12 +156,12 @@ class _SettingsState extends State<Settings> {
                 ),
                 const SizedBox(height: 35),
 
-                ExpansionTile(
-                  leading: const Icon(
+                const ExpansionTile(
+                  leading: Icon(
                     Icons.person_2_outlined,
                     color: Colors.red,
                   ),
-                  title: const Text(
+                  title: Text(
                     'Personal Info',
                     style: TextStyle(
                       color: Color(0xFFBD232B),
@@ -171,11 +171,11 @@ class _SettingsState extends State<Settings> {
                   ),
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(right: 160),
+                      padding: EdgeInsets.only(right: 160),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             "Father's Name",
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -184,50 +184,20 @@ class _SettingsState extends State<Settings> {
                               fontFamily: 'FontMain',
                             ),
                           ),
-
-                            //   decoration: const InputDecoration(
-                            //     //errorText: errorTextVal.isEmpty ? null : errorTextVal,
-                            //     enabledBorder: UnderlineInputBorder(
-                            //       borderSide: BorderSide(
-                            //         color: Color(0xFFCACACA),
-                            //       ),
-                            //     ),
-                            //     focusedBorder: UnderlineInputBorder(
-                            //       borderSide: BorderSide(
-                            //         color: Color(0xFFCACACA),
-                            //       ),
-                            //     ),
-                            //     //hintText: 'email@gmail.com',
-                            //     hintStyle: TextStyle(
-                            //       color:Color(0xFF9B9B9B),
-                            //       fontSize: 14.5,
-                            //       fontWeight: FontWeight.w500,
-                            //     ),
-                            //   ),
-                            // ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Text(
-                                "Rahul Sharma",
-                                style: TextStyle(
-                                  color: Color(0xFF9B9B9B),
-                                  fontSize: 20,
-                                ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 8),
+                            child: Text(
+                              "Rahul Sharma",
+                              style: TextStyle(
+                                color: Color(0xFF9B9B9B),
+                                fontSize: 20,
                               ),
                             ),
-
-
-                          // Text("$FullName",
-                          //   textAlign: TextAlign.center,
-                          //   style: TextStyle(
-                          //   color: Colors.black,
-                          //   fontSize: 20,
-                          //   fontFamily: 'FontMain',
-                          // ),),
-                          const SizedBox(
+                          ),
+                          SizedBox(
                             height: 10,
                           ),
-                          const Text(
+                          Text(
                             "Gender",
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -236,51 +206,20 @@ class _SettingsState extends State<Settings> {
                               fontFamily: 'FontMain',
                             ),
                           ),
-
-                            // child: TextFormField(
-                            //   readOnly: true,
-                            //   decoration: const InputDecoration(
-                            //     //errorText: errorTextVal.isEmpty ? null : errorTextVal,
-                            //     enabledBorder: UnderlineInputBorder(
-                            //       borderSide: BorderSide(
-                            //         color: Color(0xFFCACACA),
-                            //       ),
-                            //     ),
-                            //     focusedBorder: UnderlineInputBorder(
-                            //       borderSide: BorderSide(
-                            //         color: Color(0xFFCACACA),
-                            //       ),
-                            //     ),
-                            //     //hintText: 'email@gmail.com',
-                            //     hintStyle: TextStyle(
-                            //       color: Color(0xFF9B9B9B),
-                            //       fontSize: 14.5,
-                            //       fontWeight: FontWeight.w500,
-                            //     ),
-                            //   ),
-                            // ),
-                              Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Text(
-                                "Male",
-                                style: TextStyle(
-                                  color: Color(0xFF9B9B9B),
-                                  fontSize: 20,
-                                ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 8),
+                            child: Text(
+                              "Male",
+                              style: TextStyle(
+                                color: Color(0xFF9B9B9B),
+                                fontSize: 20,
                               ),
                             ),
-
-                          const SizedBox(
+                          ),
+                          SizedBox(
                             height: 10,
                           ),
-                          // Text("$loginEmail",
-                          //   textAlign: TextAlign.center,
-                          //   style: TextStyle(
-                          //     color: Colors.black,
-                          //     fontSize: 20,
-                          //     fontFamily: 'FontMain',
-                          //   ),),
-                          const Text(
+                          Text(
                             "Date of Birth",
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -289,49 +228,20 @@ class _SettingsState extends State<Settings> {
                               fontFamily: 'FontMain',
                             ),
                           ),
-                            // child: TextFormField(
-                            //   decoration: const InputDecoration(
-                            //     //errorText: errorTextVal.isEmpty ? null : errorTextVal,
-                            //     enabledBorder: UnderlineInputBorder(
-                            //       borderSide: BorderSide(
-                            //         color: Color(0xFFCACACA),
-                            //       ),
-                            //     ),
-                            //     focusedBorder: UnderlineInputBorder(
-                            //       borderSide: BorderSide(
-                            //         color: Color(0xFFCACACA),
-                            //       ),
-                            //     ),
-                            //     //hintText: 'email@gmail.com',
-                            //     hintStyle: TextStyle(
-                            //       color: Color(0xFF9B9B9B),
-                            //       fontSize: 14.5,
-                            //       fontWeight: FontWeight.w500,
-                            //     ),
-                            //   ),
-                            // ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Text(
-                                "6th May,2000",
-                                style: TextStyle(
-                                  color: Color(0xFF9B9B9B),
-                                  fontSize: 20,
-                                ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 8),
+                            child: Text(
+                              "6th May,2000",
+                              style: TextStyle(
+                                color: Color(0xFF9B9B9B),
+                                fontSize: 20,
                               ),
                             ),
-
-                          const SizedBox(
+                          ),
+                          SizedBox(
                             height: 10,
                           ),
-                          // Text("$Branch",
-                          //   textAlign: TextAlign.center,
-                          //   style: TextStyle(
-                          //     color: Colors.black,
-                          //     fontSize: 20,
-                          //     fontFamily: 'FontMain',
-                          //   ),),
-                          const Text(
+                          Text(
                             "Contact Number",
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -340,49 +250,20 @@ class _SettingsState extends State<Settings> {
                               fontFamily: 'FontMain',
                             ),
                           ),
-                            // child: TextFormField(
-                            //   decoration: const InputDecoration(
-                            //     //errorText: errorTextVal.isEmpty ? null : errorTextVal,
-                            //     enabledBorder: UnderlineInputBorder(
-                            //       borderSide: BorderSide(
-                            //         color: Color(0xFFCACACA),
-                            //       ),
-                            //     ),
-                            //     focusedBorder: UnderlineInputBorder(
-                            //       borderSide: BorderSide(
-                            //         color: Color(0xFFCACACA),
-                            //       ),
-                            //     ),
-                            //     hintText: '8102262****',
-                            //     hintStyle: TextStyle(
-                            //       color: Color(0xFF9B9B9B),
-                            //       fontSize: 18,
-                            //       fontWeight: FontWeight.w500,
-                            //     ),
-                            //   ),
-                            // ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Text(
-                                "9898153789",
-                                style: TextStyle(
-                                  color: Color(0xFF9B9B9B),
-                                  fontSize: 20,
-                                ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 8),
+                            child: Text(
+                              "9898153789",
+                              style: TextStyle(
+                                color: Color(0xFF9B9B9B),
+                                fontSize: 20,
                               ),
                             ),
-
-                          const SizedBox(
+                          ),
+                          SizedBox(
                             height: 10,
                           ),
-                          // Text("$College",
-                          //   textAlign: TextAlign.center,
-                          //   style: TextStyle(
-                          //     color:  Colors.black,
-                          //     fontSize: 20,
-                          //     fontFamily: 'FontMain',
-                          //   ),),
-                          const Text(
+                          Text(
                             "College",
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -391,56 +272,16 @@ class _SettingsState extends State<Settings> {
                               fontFamily: 'FontMain',
                             ),
                           ),
-
-                            // child: TextFormField(
-                            //   decoration: const InputDecoration(
-                            //     //errorText: errorTextVal.isEmpty ? null : errorTextVal,
-                            //     enabledBorder: UnderlineInputBorder(
-                            //       borderSide: BorderSide(
-                            //         color: Color(0xFFCACACA),
-                            //       ),
-                            //     ),
-                            //     focusedBorder: UnderlineInputBorder(
-                            //       borderSide: BorderSide(
-                            //         color: Color(0xFFCACACA),
-                            //       ),
-                            //     ),
-                            //     hintText: 'TIT College',
-                            //     hintStyle: TextStyle(
-                            //       color: Color(0xFF9B9B9B),
-                            //       fontSize: 18,
-                            //       fontWeight: FontWeight.w500,
-                            //     ),
-                            //   ),
-                            // ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Text(
-                                "ITI College",
-                                style: TextStyle(
-                                  color: Color(0xFF9B9B9B),
-                                  fontSize: 20,
-                                ),
-
+                          Padding(
+                            padding: EdgeInsets.only(top: 8),
+                            child: Text(
+                              "ITI College",
+                              style: TextStyle(
+                                color: Color(0xFF9B9B9B),
+                                fontSize: 20,
+                              ),
                             ),
                           ),
-                          // Text("$Gender",
-                          //   textAlign: TextAlign.center,
-                          //   style: TextStyle(
-                          //     color:  Colors.black,
-                          //     fontSize: 20,
-                          //     fontFamily: 'FontMain',
-                          //   ),),
-                          // if (_isExpanded)
-                          //   Icon(
-                          //     Icons.keyboard_arrow_down_outlined,
-                          //     color: Colors.black,
-                          //   )
-                          // else
-                          //   Icon(
-                          //     Icons.access_time,
-                          //     color: Colors.black,
-                          //   ),
                         ],
                       ),
                     ),
@@ -487,26 +328,6 @@ class _SettingsState extends State<Settings> {
                 ),
 
                 const SizedBox(height: 30),
-                // InkWell(
-                //
-                //   onTap: ()async{
-                //     var sharedPref=await SharedPreferences.getInstance();
-                //     sharedPref.setBool(CongratulationScreenState.KEYLOGIN, false);
-                //     Navigator.pushReplacement(
-                //       context,
-                //       MaterialPageRoute(
-                //         builder: (context) =>  SignIn(),
-                //       ),
-                //     );
-                //   },
-                //   child: ListTile(
-                //
-                //     title: Text('Sign out',style: TextStyle(color: Color(0xFFBD232B),fontSize: 25, fontFamily: 'FontMain',),),
-                //
-                //     trailing: Icon(Icons.arrow_forward),
-                //
-                //   ),
-                // )
                 InkWell(
                   onTap: () async {
                     // Handle onTap
