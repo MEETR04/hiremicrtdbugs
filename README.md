@@ -46,3 +46,4 @@ New BUGS ::::::::::::::::::::::::::::::::::: 11-05-24
 2. Padding in InternDescription.dart
 3. Padding in Register.dart
 4. Back Button not working  on OTPVerificationScreen.dart
+5. Soon working on bug email field should not be blank on OTPVerification.dart
