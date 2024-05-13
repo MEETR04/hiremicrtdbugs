@@ -552,8 +552,11 @@ class _RegisterState extends State<Register> {
                 child: Row(
                   children: [
                     const SizedBox(width: 30,),
-                    CustomTextWidget(text: "Create your new account,\nwe are glad that you joined us.",
-                      fontSize: screenWidth < 411 ? 11 : 13,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: CustomTextWidget(text: "Create your new account,\nwe are glad that you joined us.",
+                        fontSize: screenWidth < 411 ? 11 : 13,
+                      ),
                     ),
                   ],
                 ),
